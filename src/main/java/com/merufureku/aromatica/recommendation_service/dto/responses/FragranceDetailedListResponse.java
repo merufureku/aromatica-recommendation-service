@@ -9,5 +9,6 @@ public record FragranceDetailedListResponse(List<FragranceDetailedResponse> frag
             String name,
             String brand,
             String description,
+            String imageUrl,
             List<NoteResponse> noteResponse){}
 }

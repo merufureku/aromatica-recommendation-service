@@ -4,6 +4,6 @@ import java.util.List;
 
 public record RecommendationResponse(List<Recommendations> recommendations) {
 
-    public record Recommendations(Long fragranceId, String name, String brand, String description, Float similarityScore){}
+    public record Recommendations(Long fragranceId, String name, String brand, String description, String imageUrl, Float similarityScore){}
 
 }

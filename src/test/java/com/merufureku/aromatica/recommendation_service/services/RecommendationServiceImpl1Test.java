@@ -85,7 +85,7 @@ class RecommendationServiceImpl1Test {
 
         // fragrance metadata
         var detailedResponses = Collections.singletonList(
-                new FragranceDetailedListResponse.FragranceDetailedResponse(1L, "name", "brand", "desc", Collections.emptyList())
+                new FragranceDetailedListResponse.FragranceDetailedResponse(1L, "name", "brand", "desc", "imageUrl", Collections.emptyList())
         );
         var detailedListResponse = new FragranceDetailedListResponse(detailedResponses);
         var fragranceBaseResponse = new BaseResponse<>(HttpStatus.OK.value(), "success", detailedListResponse);
@@ -94,7 +94,7 @@ class RecommendationServiceImpl1Test {
 
         // final CBF response creation
         List<RecommendationResponse.Recommendations> cbfData = Collections.singletonList(
-                new RecommendationResponse.Recommendations(1L, "name", "brand", "desc", 0.9f)
+                new RecommendationResponse.Recommendations(1L, "name", "brand", "desc", "imageUrl",0.9f)
         );
         when(recommendationHelper.createCbfResponse(anyMap(), anyMap())).thenReturn(cbfData);
 

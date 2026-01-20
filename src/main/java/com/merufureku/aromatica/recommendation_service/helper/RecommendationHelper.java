@@ -110,6 +110,7 @@ public class RecommendationHelper {
                             fragrance.name(),
                             fragrance.brand(),
                             fragrance.description(),
+                            fragrance.imageUrl(),
                             score
                     );
                 })
@@ -131,6 +132,7 @@ public class RecommendationHelper {
                             fragrance.name(),
                             fragrance.brand(),
                             fragrance.description(),
+                            fragrance.imageUrl(),
                             score
                     );
                 })
