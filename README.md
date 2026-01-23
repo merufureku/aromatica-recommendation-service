@@ -162,7 +162,7 @@ src/main/java/.../recommendation_service/
 
 ## Related Services
 
-- [Auth Service](../auth-service) - Authentication
-- [Fragrance Service](../fragrance-service) - Gets note data from here
-- [Collection Service](../collection-service) - Gets collection data
-- [Review Service](../review-service) - Gets review/rating data
+- [Auth Service](https://github.com/merufureku/aromatica-auth-service) - Authentication
+- [Fragrance Service](https://github.com/merufureku/aromatica-fragrance-service) - Perfume catalog
+- [Collection Service](https://github.com/merufureku/aromatica-collection-service) - User collections
+- [Review Service](https://github.com/merufureku/aromatica-review-service) - Gets review/rating data
