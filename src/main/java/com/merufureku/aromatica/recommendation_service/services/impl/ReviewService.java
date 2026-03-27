@@ -8,6 +8,7 @@ import com.merufureku.aromatica.recommendation_service.helper.RestExceptionHelpe
 import com.merufureku.aromatica.recommendation_service.services.interfaces.IReviewService;
 import com.merufureku.aromatica.recommendation_service.utilities.TokenUtility;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import static com.merufureku.aromatica.recommendation_service.constants.RecommendationCollectionConstants.REVIEW_SERVICE;
 
 @Service
+@RequiredArgsConstructor
 public class ReviewService implements IReviewService {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
@@ -28,13 +30,6 @@ public class ReviewService implements IReviewService {
     private final UrlConfig urlConfig;
     private final TokenUtility tokenUtility;
     private final RestExceptionHelper restExceptionHelper;
-
-    public ReviewService(RestTemplate restTemplate, UrlConfig urlConfig, TokenUtility tokenUtility, RestExceptionHelper restExceptionHelper) {
-        this.restTemplate = restTemplate;
-        this.urlConfig = urlConfig;
-        this.tokenUtility = tokenUtility;
-        this.restExceptionHelper = restExceptionHelper;
-    }
 
     @Override
     @CircuitBreaker(name = "reviewServiceCircuitBreaker")

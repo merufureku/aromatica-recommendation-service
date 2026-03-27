@@ -13,13 +13,12 @@ import com.merufureku.aromatica.recommendation_service.services.async.AsyncVecto
 import com.merufureku.aromatica.recommendation_service.services.interfaces.ICollectionService;
 import com.merufureku.aromatica.recommendation_service.services.interfaces.IFragranceService;
 import com.merufureku.aromatica.recommendation_service.services.interfaces.IRecommendationService;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -30,6 +29,7 @@ import static com.merufureku.aromatica.recommendation_service.constants.Recommen
 import static com.merufureku.aromatica.recommendation_service.enums.CustomStatusEnums.NO_FRAGRANCE_TO_RECOMMEND;
 
 @Service
+@RequiredArgsConstructor
 public class RecommendationServiceImpl1 implements IRecommendationService {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
@@ -41,17 +41,6 @@ public class RecommendationServiceImpl1 implements IRecommendationService {
     private final AsyncReviewsClient asyncReviewsClient;
     private final AsyncCollectionClient asyncCollectionClient;
     private final AsyncVectorBuilder asyncVectorBuilder;
-
-
-    public RecommendationServiceImpl1(ICollectionService collectionsService, IFragranceService fragranceService, RecommendationHelper recommendationHelper, AsyncFragranceClient asyncFragranceClient, AsyncReviewsClient asyncReviewsClient, AsyncCollectionClient asyncCollectionClient, AsyncVectorBuilder asyncVectorBuilder) {
-        this.collectionsService = collectionsService;
-        this.fragranceService = fragranceService;
-        this.recommendationHelper = recommendationHelper;
-        this.asyncFragranceClient = asyncFragranceClient;
-        this.asyncReviewsClient = asyncReviewsClient;
-        this.asyncCollectionClient = asyncCollectionClient;
-        this.asyncVectorBuilder = asyncVectorBuilder;
-    }
 
     @Override
     public BaseResponse<RecommendationResponse> getCBFRecommendations(Integer userId, int limit, BaseParam baseParam) {
@@ -71,16 +60,16 @@ public class RecommendationServiceImpl1 implements IRecommendationService {
 
         completeFuture(userNotesFuture, allNotesFuture);
 
-        var userCollectionNotes = userNotesFuture.getNow(new FragranceNoteListResponse(new ArrayList<>()));
-        var allFragranceNotes = allNotesFuture.getNow(new FragranceNoteListResponse(new ArrayList<>()));
+        var userCollectionNotes = userNotesFuture.join();
+        var allFragranceNotes = allNotesFuture.join();
 
         var userFragranceVectorsFuture = asyncVectorBuilder.buildUserVector(userCollectionNotes.fragranceNoteLists());
         var allFragranceVectorsFuture = asyncVectorBuilder.buildAllPerfumeVectors(allFragranceNotes);
 
         completeFuture(userFragranceVectorsFuture, allFragranceVectorsFuture);
 
-        var userFragranceVector = userFragranceVectorsFuture.getNow(new HashMap<>());
-        var allFragranceVector = allFragranceVectorsFuture.getNow(new HashMap<>());
+        var userFragranceVector = userFragranceVectorsFuture.join();
+        var allFragranceVector = allFragranceVectorsFuture.join();
 
         var cbfResult = recommendationHelper.calculateCBFRecommendations(userFragranceVector, allFragranceVector, limit);
 
@@ -102,8 +91,8 @@ public class RecommendationServiceImpl1 implements IRecommendationService {
         var userCollectionsFuture = asyncCollectionClient.getUserCollection(userId, 1, baseParam.correlationId());
         completeFuture(userReviewsFuture, userCollectionsFuture);
 
-        var userReviews = userReviewsFuture.getNow(new GetAllReviews(new ArrayList<>()));
-        var userCollections = userCollectionsFuture.getNow(new UserCollectionsResponse(userId, new ArrayList<>()));
+        var userReviews = userReviewsFuture.join();
+        var userCollections = userCollectionsFuture.join();
 
         var targetUserInteractions = recommendationHelper.targetUserInteraction(userCollections, userReviews);
         var targetUserAllPerfumes = targetUserInteractions.values().iterator().next().keySet();
@@ -117,8 +106,8 @@ public class RecommendationServiceImpl1 implements IRecommendationService {
                 1, baseParam.correlationId());
         completeFuture(allUserReviewsFuture, allUsersCollectionFuture);
 
-        var allReviews = allUserReviewsFuture.getNow(new GetAllReviews(new ArrayList<>()));
-        var allCollections = allUsersCollectionFuture.getNow(new CollectionsResponse(new ArrayList<>()));
+        var allReviews = allUserReviewsFuture.join();
+        var allCollections = allUsersCollectionFuture.join();
 
         var allUserInteractions = recommendationHelper.allUserInteraction(allCollections, allReviews);
 

@@ -10,6 +10,7 @@ import com.merufureku.aromatica.recommendation_service.exceptions.ServiceExcepti
 import com.merufureku.aromatica.recommendation_service.helper.RestExceptionHelper;
 import com.merufureku.aromatica.recommendation_service.services.interfaces.IFragranceService;
 import com.merufureku.aromatica.recommendation_service.utilities.TokenUtility;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.ParameterizedTypeReference;
@@ -23,6 +24,7 @@ import static com.merufureku.aromatica.recommendation_service.constants.Recommen
 import static com.merufureku.aromatica.recommendation_service.enums.CustomStatusEnums.NOTE_NOT_EXIST;
 
 @Service
+@RequiredArgsConstructor
 public class FragranceService implements IFragranceService {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
@@ -31,13 +33,6 @@ public class FragranceService implements IFragranceService {
     private final UrlConfig urlConfig;
     private final TokenUtility tokenUtility;
     private final RestExceptionHelper restExceptionHelper;
-
-    public FragranceService(RestTemplate restTemplate, UrlConfig urlConfig, TokenUtility tokenUtility, RestExceptionHelper restExceptionHelper) {
-        this.restTemplate = restTemplate;
-        this.urlConfig = urlConfig;
-        this.tokenUtility = tokenUtility;
-        this.restExceptionHelper = restExceptionHelper;
-    }
 
     @Override
     public BaseResponse<FragranceDetailedListResponse> getPerfumes(GetFragranceBatchParam param, int version, String correlationId) {
